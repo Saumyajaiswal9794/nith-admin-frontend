@@ -12,8 +12,8 @@ interface Department {
   code: string;
   slug: string;
   name_en: string;
-  name_hi: string | null;
-  short_description_en: string | null;
+  name_hn: string | null;
+  description_en: string | null;
   status: string;
   created_at: string;
 }
@@ -49,7 +49,7 @@ export default function DepartmentsPage() {
 
   // New department form
   const [showNewForm, setShowNewForm] = useState(false);
-  const [newDept, setNewDept] = useState({ code: '', slug: '', name_en: '', name_hi: '', status: 'active' });
+  const [newDept, setNewDept] = useState({ code: '', slug: '', name_en: '', name_hn: '', description_en: '', status: 'active' });
   const [creating, setCreating] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
@@ -57,7 +57,7 @@ export default function DepartmentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ code: '', slug: '', name_en: '', name_hi: '', status: '' });
+  const [editForm, setEditForm] = useState({ code: '', slug: '', name_en: '', name_hn: '', status: '' });
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -99,7 +99,7 @@ export default function DepartmentsPage() {
       const json = await res.json();
       if (json.success) {
         showToast('success', `Department "${newDept.name_en}" created`);
-        setNewDept({ code: '', slug: '', name_en: '', name_hi: '', status: 'active' });
+        setNewDept({ code: '', slug: '', name_en: '', name_hn: '', description_en: '', status: 'active' });
         setShowNewForm(false);
         fetchDepts();
       } else {
@@ -157,7 +157,7 @@ export default function DepartmentsPage() {
 
   const startEdit = (dept: Department) => {
     setEditingId(dept.id);
-    setEditForm({ code: dept.code, slug: dept.slug, name_en: dept.name_en, name_hi: dept.name_hi || '', status: dept.status });
+    setEditForm({ code: dept.code, slug: dept.slug, name_en: dept.name_en, name_hn: dept.name_hn || '', status: dept.status });
   };
 
   const filtered = departments.filter(d => {
@@ -282,7 +282,8 @@ export default function DepartmentsPage() {
                 <FormField label="Department Code" value={newDept.code} onChange={v => setNewDept({ ...newDept, code: v.toLowerCase().replace(/[^a-z0-9]/g, '') })} placeholder="e.g. cse" />
                 <FormField label="Slug" value={newDept.slug} onChange={v => setNewDept({ ...newDept, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, '') })} placeholder="e.g. computer-science-engineering" />
                 <FormField label="Name (English)" value={newDept.name_en} onChange={v => setNewDept({ ...newDept, name_en: v })} placeholder="e.g. Computer Science & Engineering" />
-                <FormField label="Name (Hindi)" value={newDept.name_hi} onChange={v => setNewDept({ ...newDept, name_hi: v })} placeholder="e.g. कंप्यूटर विज्ञान इंजीनियरिंग" />
+                <FormField label="Name (Hindi)" value={newDept.name_hn} onChange={v => setNewDept({ ...newDept, name_hn: v })} placeholder="e.g. कंप्यूटर विज्ञान इंजीनियरिंग" />
+                <FormField label="Description (EN)" value={newDept.description_en || ''} onChange={v => setNewDept({ ...newDept, description_en: v })} placeholder="Department description in English" />
                 <div className="flex items-center gap-2">
                   <label className="text-xs font-medium text-[#171717]/70 w-28">Status</label>
                   <select
@@ -358,7 +359,7 @@ export default function DepartmentsPage() {
                           </div>
                           <div className="flex gap-2">
                             <input value={editForm.name_en} onChange={e => setEditForm({ ...editForm, name_en: e.target.value })} className="flex-1 px-2 py-1.5 border border-[#171717]/20 rounded text-xs" placeholder="Name EN" />
-                            <input value={editForm.name_hi} onChange={e => setEditForm({ ...editForm, name_hi: e.target.value })} className="flex-1 px-2 py-1.5 border border-[#171717]/20 rounded text-xs" placeholder="Name HI" />
+                            <input value={editForm.name_hn} onChange={e => setEditForm({ ...editForm, name_hn: e.target.value })} className="flex-1 px-2 py-1.5 border border-[#171717]/20 rounded text-xs" placeholder="Name HN" />
                           </div>
                           <select value={editForm.status} onChange={e => setEditForm({ ...editForm, status: e.target.value })} className="px-2 py-1.5 border border-[#171717]/20 rounded text-xs">
                             <option value="active">Active</option>
@@ -379,7 +380,7 @@ export default function DepartmentsPage() {
                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${dept.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-600'}`}>{dept.status}</span>
                             </div>
                             <p className="text-sm font-medium text-[#171717] truncate mt-0.5">{dept.name_en}</p>
-                            {dept.name_hi && <p className="text-xs text-[#171717]/50 truncate">{dept.name_hi}</p>}
+                            {dept.name_hn && <p className="text-xs text-[#171717]/50 truncate">{dept.name_hn}</p>}
                           </div>
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
